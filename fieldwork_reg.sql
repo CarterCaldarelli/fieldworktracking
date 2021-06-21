@@ -30,12 +30,12 @@ with    cur_ay_year as (select 2021 as ACYR from DUAL)
                          from    ban_termcodes
                         where    (select TRUNC(sysdate) from dual) > term_start_date
                           and    term_start_date < (select TRUNC(sysdate) from dual))
-      , nxt_term as (select    termxwalk_term as next_term
-                       from    termxwalk
-                            , (select    termxwalk_num + 1 as nxt_term_walk
-                                 from    termxwalk
-                                where    termxwalk_term = (select current_term from cur_term)) nxt 
-                      where  nxt.nxt_term_walk = termxwalk_num)
+      , nxt_term as (select    terms_term as next_term
+                       from    terms
+                            , (select    terms_num + 1 as nxt_term_walk
+                                 from    terms
+                                where    terms_term = (select current_term from cur_term)) nxt 
+                      where  nxt.nxt_term_walk = terms_num)
 
 
 select    distinct stu_pidm                                             pidm
@@ -110,7 +110,7 @@ select    distinct stu_pidm                                             pidm
              from    enrollment_table
                   , (  select    distinct enrollment_table.pidm                      pidm
                                , max(enrollment_table.term_code)                     termcode
-                         from    enrollment
+                         from    enrollment_table
                      group by   enrollment_table.pidm) rec_term
             where    enrollment_table.pidm = rec_term.pidm
               and    enrollment_table.term_code = rec_term.termcode) recent 
